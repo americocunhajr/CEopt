@@ -69,7 +69,7 @@ If you use **CEopt** in your research, please cite the following publication:
 - *A. Cunha Jr, M. V. Issa, J. C. Basilio and J. G. Telles Ribeiro, CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method, 2024 (under review)*
 
 ```
-@article{Issa2024CROSS-OPT,
+@article{CunhaJr2024CEopt,
    author  = {A {Cunha~Jr} and M. V. Issa and J. C. Basilio and J. G. {Telles Ribeiro}},
    title   = "{CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method}",
    journal = {Under Review},
