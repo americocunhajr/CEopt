@@ -1,7 +1,7 @@
 <img src="logo/CEopt.png" width="40%">
 
 **CEopt: Cross-Entropy Optimizer** is a Matlab package that implements a framework for nonconvex optimization using the Cross-Entropy (CE) method. Due to the algorithm's relative simplicity, CEopt provides a transparent "gray-box" optimization solver with intuitive control parameters. It effectively handles both equality and inequality constraints through an augmented Lagrangian method, offering robustness and scalability for moderately sized complex problems. CEopt's applicability and effectiveness are demonstrated through select case studies, making it a practical addition to optimization research and application toolsets. More details are in the following paper:
-- *A. Cunha Jr, M. V. Issa, J. C. Basilio and J. G. Telles Ribeiro, CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method, under review, 2024*
+- *A. Cunha Jr, M. V. Issa, J. C. Basilio and J. G. Telles Ribeiro, CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method, 2024 (under review)*
 
 Preprint available at:
 xxx
@@ -18,7 +18,7 @@ Simulations done with **CEopt** are fully reproducible, as can be seen on this <
 
 ## Citing this study
 We ask the code users to cite the following manuscript in any publications reporting work done with our code:
-- *A. Cunha Jr, M. V. Issa, J. C. Basilio and J. G. Telles Ribeiro, CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method, under review, 2024*
+- *A. Cunha Jr, M. V. Issa, J. C. Basilio and J. G. Telles Ribeiro, CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method, 2024 (under review)*
 
 ```
 @article{Issa2024CROSS-OPT,
