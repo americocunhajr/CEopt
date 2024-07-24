@@ -53,10 +53,10 @@ To run CEopt, use the following commands in Matlab:
 Customize the input parameters in the provided scripts to fit your specific optimization problem.
 
 ## Reproducibility
-The tutorials of CEopt package are fully reproducible. You can find a fully reproducible capsule of the simulations on <a href="https://codeocean.com/capsule/xxx" target="_blank">CodeOcean</a>.
+The tutorials of **CEopt** package are fully reproducible. You can find a fully reproducible capsule of the simulations on <a href="https://codeocean.com/capsule/xxx" target="_blank">CodeOcean</a>.
 
 ## Documentation
-The routines in CEopt package are well-commented to explain their functionality. Each routine includes a description of its purpose, as well as inputs and outputs. Detailed documentation can be found within the code comments and the provided examples.
+The routines in **CEopt** package are well-commented to explain their functionality. Each routine includes a description of its purpose, as well as inputs and outputs. Detailed documentation about the code functionality can be found in paper.
 
 ## Authors
 - Americo Cunha Jr
