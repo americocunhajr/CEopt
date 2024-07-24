@@ -94,6 +94,6 @@ If you use **CEopt** in your research, please cite the following publication:
 <img src="logo/cnpq.png" width="20%"> &nbsp; &nbsp; <img src="logo/capes.png" width="10%">  &nbsp; &nbsp; &nbsp; <img src="logo/faperj.jpg" width="20%">
 
 ### Contact
-For any questions or further information, please contact the main developer at:
+For any questions or further information, please contact:
 
 Americo Cunha Jr: americo.cunha@uerj.br
