@@ -55,36 +55,36 @@ To run CEopt, use the following commands in Matlab:
    [Xopt,Fopt,ExitFlag,CEstr] = CEopt(fun,xmean0,sigma0,lb,ub,nonlcon,CEstr)
    ```
 Each parameter is described as follows:
-- fun: Function handle for the objective function. This function must accept a 1 x Nvars row  vector  (representing a single sample) or an M x Nvars matrix (representing M samples with variables in columns) as input and return a scalar value or a row vector of M scalar values (for vectorized operations) respectively.
-- xmean0: Initial mean of the design variables distributions.
-- sigma0: Initial standard deviations for the design variables distributions.
-- lb: Lower bounds for the design variables.
-- ub: Upper bounds for the design variables.
-- nonlcon: Function handle for the nonlinear constraints. Returns two arrays c (inequalities) and ceq (equalities).
-- CEstr: Structure with settings for the CEopt algorithm.
+- `fun`: Function handle for the objective function. This function must accept a 1 x Nvars row  vector  (representing a single sample) or an M x Nvars matrix (representing M samples with variables in columns) as input and return a scalar value or a row vector of M scalar values (for vectorized operations) respectively.
+- `xmean0`: Initial mean of the design variables distributions.
+- `sigma0`: Initial standard deviations for the design variables distributions.
+- `lb`: Lower bounds for the design variables.
+- `ub`: Upper bounds for the design variables.
+- `nonlcon`: Function handle for the nonlinear constraints. Returns two arrays c (inequalities) and ceq (equalities).
+- `CEstr`: Structure with settings for the CEopt algorithm.
 
 The CEstr structure allows for extensive customization of the CE optimization process. Here's a breakdown of its fields:
 
-- Verbose: Boolean flag to enable detailed output during optimization.
-- isConstrained: Set to true if there are constraints defined by nonlcon.
-- isVectorized: Set to true if fun and nonlcon can evaluate multiple rows of X in a single call.
-- Nvars: Number of variables in the optimization problem.
-- EliteFactor: Proportion of the population considered elite.
-- Nsamp: Number of samples used in each iteration of the optimization.
-- MaxIter: Maximum number of iterations for the optimization process.
-- MaxStall: Maximum number of iterations without improvement before termination.
-- MaxFcount: Maximum number of function evaluations allowed.
-- MinFval: Target objective function value for early stopping.
-- TolAbs: Absolute tolerance on the change in the objective function value for convergence.
-- TolRel: Relative tolerance on the change in the objective function value for convergence.
-- TolCon: Tolerance on the feasibility of constraints.
-- TolFun: Tolerance on the change in function value for convergence.
-- alpha: Smoothing parameter for the mean update.
-- beta: Smoothing parameter for the standard deviation update.
-- q: Smoothing parameter for standard deviation update.
-- NonlconAlgorithm: Algorithm used for handling nonlinear constraints.
-- InitialPenalty: Initial penalty coefficient for constraint violation.
-- PenaltyFactor: Scaling factor for the penalty coefficient.
+- `Verbose`: Boolean flag to enable detailed output during optimization.
+- `isConstrained`: Set to true if there are constraints defined by nonlcon.
+- `isVectorized`: Set to true if fun and nonlcon can evaluate multiple rows of X in a single call.
+- `Nvars`: Number of variables in the optimization problem.
+- `EliteFactor`: Proportion of the population considered elite.
+- `Nsamp`: Number of samples used in each iteration of the optimization.
+- `MaxIter`: Maximum number of iterations for the optimization process.
+- `MaxStall`: Maximum number of iterations without improvement before termination.
+- `MaxFcount`: Maximum number of function evaluations allowed.
+- `MinFval`: Target objective function value for early stopping.
+- `TolAbs`: Absolute tolerance on the change in the objective function value for convergence.
+- `TolRel`: Relative tolerance on the change in the objective function value for convergence.
+- `TolCon`: Tolerance on the feasibility of constraints.
+- `TolFun`: Tolerance on the change in function value for convergence.
+- `alpha`: Smoothing parameter for the mean update.
+- `beta`: Smoothing parameter for the standard deviation update.
+- `q`: Smoothing parameter for standard deviation update.
+- `NonlconAlgorithm`: Algorithm used for handling nonlinear constraints.
+- `InitialPenalty`: Initial penalty coefficient for constraint violation.
+- `PenaltyFactor`: Scaling factor for the penalty coefficient.
 
 This extensive set of parameters and settings enables users to finely tune the CE optimization to their specific needs and problem characteristics.
 
