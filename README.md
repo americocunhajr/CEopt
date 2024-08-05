@@ -60,7 +60,7 @@ Each parameter is described as follows:
 - `sigma0`: Initial standard deviations for the design variables distributions.
 - `lb`: Lower bounds for the design variables.
 - `ub`: Upper bounds for the design variables.
-- `nonlcon`: Function handle for the nonlinear constraints. Returns two arrays c (inequalities) and ceq (equalities).
+- `nonlcon`: Function handle for the nonlinear constraints. Returns two arrays `G` (inequalities) and `H` (equalities).
 - `CEstr`: Structure with settings for the CEopt algorithm.
 
 The CEstr structure allows for extensive customization of the CE optimization process. Here's a breakdown of its fields:
