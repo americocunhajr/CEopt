@@ -132,6 +132,10 @@ function F = PeaksFunc(x)
 end
 ```
 
+<p align="center">
+<img src="logo/Fig6-Example2.png" width="60%">
+</p>
+
 ```matlab
 % Constrained optimization with 2 variables
 
@@ -178,6 +182,10 @@ function [G,H] = ConicConstraints(x)
     H  = (x1+1).^2 - (x2/2).^4;
 end
 ```
+
+<p align="center">
+<img src="logo/Fig13-Example6.png" width="60%">
+</p>
 
 ### Reproducibility
 The tutorials of **CEopt** package are fully reproducible. You can find a fully reproducible capsule of the simulations on <a href="https://codeocean.com/capsule/xxx" target="_blank">CodeOcean</a>.
