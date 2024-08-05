@@ -133,7 +133,7 @@ end
 ```
 
 <p align="center">
-<img src="logo/Fig6-Example2.png" width="60%">
+<img src="logo/Fig6-Example2.png" width="80%">
 </p>
 
 ```matlab
@@ -184,7 +184,7 @@ end
 ```
 
 <p align="center">
-<img src="logo/Fig13-Example6.png" width="60%">
+<img src="logo/Fig13-Example6.png" width="80%">
 </p>
 
 ### Reproducibility
