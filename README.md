@@ -11,6 +11,7 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Examples](#examples)
 - [Reproducibility](#reproducibility)
 - [Documentation](#documentation)
 - [Authors](#authors)
@@ -87,7 +88,96 @@ The CEstr structure allows for extensive customization of the CE optimization pr
 
 This extensive set of parameters and settings enables users to finely tune the CE optimization to their specific needs and problem characteristics.
 
+### Examples
 
+Below are step-by-step guides demonstrating how to use CEopt for different optimization tasks.
+
+```matlab
+% Unconstrained optimization with 2 variables
+
+% objective function
+F = @(x)PeaksFunc(x);
+
+% bound for design variables
+lb = [-3; -3];
+ub = [ 3;  3];
+
+% initialize mean and std. dev. vectors
+mu0    = lb + (ub-lb).*rand(2,1);
+sigma0 = 5*(ub-lb);
+        
+% define parameters for the CE optimizer
+CEstr.isVectorized = 1;       % Vectorized function
+CEstr.EliteFactor  = 0.1;     % Elite samples percentage
+CEstr.Nsamp        = 50;      % Number of samples
+CEstr.MaxIter      = 80;      % Maximum of iterations
+CEstr.TolAbs       = 1.0e-2;  % Absolute tolerance
+CEstr.TolRel       = 1.0e-2;  % Relative tolerance
+CEstr.alpha        = 0.7;     % Smoothing parameter
+CEstr.beta         = 0.8;     % Smoothing parameter
+CEstr.q            = 10;      % Smoothing parameter
+
+% CE optimizer
+tic
+[X_opt,F_opt,ExitFlag,CEstr] = CEopt(F,mu0,sigma0,lb,ub,[],CEstr)
+toc
+
+% objective function
+function F = PeaksFunc(x)
+    x1 = x(:,1);
+    x2 = x(:,2);
+     F = 3*(1-x1).^2.*exp(-x1.^2 - (x2+1).^2) ...
+       - 10*(x1/5 - x1.^3 - x2.^5).*exp(-x1.^2 - x2.^2)...
+       - (1/3)*exp(-(x1+1).^2 - x2.^2);
+end
+```
+
+```matlab
+% Constrained optimization with 2 variables
+
+% objective function and constraints
+F       = @PatternSearchFunc;
+nonlcon = @ConicConstraints;
+
+% bound for design variables
+lb  = [-6 -4];
+ub  = [ 2  4];
+mu0 = [-4  2];
+
+% cross-entropy optimizer struct
+CEstr.isVectorized  = 1;       % vectorized function
+CEstr.TolCon        = 1.0e-6;  % relative tolerance
+
+tic
+[Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,[],[],lb,ub,nonlcon,CEstr)
+toc
+
+% objective function
+function F = PatternSearchFunc(x)
+    x1 = x(:,1);
+    x2 = x(:,2);
+    F = zeros(size(x1,1),1);
+    for i = 1:size(x,1)
+        if  x1(i) < -5
+            F(i) = (x1(i)+5).^2 + abs(x2(i));
+        elseif x1(i) < -3
+            F(i) = -2*sin(x1(i)) + abs(x2(i));
+        elseif x1(i) < 0
+            F(i) = 0.5*x1(i) + 2 + abs(x2(i));
+        elseif x1 >= 0
+            F(i) = .3*sqrt(x1(i)) + 5/2 + abs(x2(i));
+        end
+    end
+end
+
+% equality and inequality constraints
+function [G,H] = ConicConstraints(x)
+    x1 = x(:,1);
+    x2 = x(:,2);
+    G  = 2*x1.^2 + x2.^2 - 3;
+    H  = (x1+1).^2 - (x2/2).^4;
+end
+```
 
 ### Reproducibility
 The tutorials of **CEopt** package are fully reproducible. You can find a fully reproducible capsule of the simulations on <a href="https://codeocean.com/capsule/xxx" target="_blank">CodeOcean</a>.
