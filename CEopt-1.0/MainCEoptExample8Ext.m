@@ -2,10 +2,10 @@
 %  MainCEoptExample8Ext.m
 % -----------------------------------------------------------------
 %  programmer: Julio Cesar de Castro Basilio
-%              juliobasilio@ymail.com
+%              basilio.julio@posgraduacao.uerj.br
 %
 %  Originally programmed in: Jul 13, 2024
-%           Last updated in: Jul 31, 2024
+%           Last updated in: Aug 09, 2024
 % -----------------------------------------------------------------
 %  ﻿﻿Example 8: Fractional-order controller optimal tuning
 %  (this example may take several minutes to run)
@@ -61,27 +61,40 @@ tic
 [Xopt,Fopt,ExitFlag,CEstr] = CEopt(fun,[],[],lb,ub,nonlcon,CEstr);
 toc
 
+% run the optimal controller
+Kp     = Xopt(1);
+Ki     = Xopt(2);
+Kd     = Xopt(3);
+OrderI = Xopt(4);
+OrderD = Xopt(5);
+sim('FOPIDControllerCartPendulum.slx');
+
 % Plotting the results
-figure;
 subplot(2,1,1);
-plot(0:, theta, 'b-', 'LineWidth', 1.5);
-hold on;
-plot(tout, r, 'r--', 'LineWidth', 1.5);
-xlabel('Time (s)');
-ylabel('Angle \theta (rad)');
-legend('\theta', '\theta_{ref}');
-title('Angle \theta vs. Time');
-grid on;
+hold on
+plot(tout,   theta, 'b-','LineWidth', 2);
+plot(tout, tout.*r,'r--','LineWidth', 2);
+xlabel('time'                ,'FontSize',20,'FontName', 'Helvetica');
+ylabel('angular displacement','FontSize',20,'FontName', 'Helvetica');
+legend({'Pendulum Angle','Angular Reference'},'Location','Best','FontSize',16);
+set(gca, 'FontName', 'Helvetica');
+set(gca, 'FontSize', 18);
+box on
+hold off
 
 subplot(2,1,2);
-plot(tout, xdisp, 'b-', 'LineWidth', 1.5);
-hold on;
-plot(tout, x_ref, 'r--', 'LineWidth', 1.5);
-xlabel('Time (s)');
-ylabel('Displacement x (m)');
-legend('x', 'x_{ref}');
-title('Displacement x vs. Time');
-grid on;
+hold on
+plot(tout, xdisp                    ,'b-', 'LineWidth',2);
+plot(tout, ones(length(tout))*(+0.5),'r--','LineWidth',2);
+plot(tout, ones(length(tout))*(-0.5),'r--','LineWidth',2);
+xlabel('time'       , 'FontSize',20,'FontName','Helvetica');
+ylabel('displacement','FontSize',20,'FontName','Helvetica');
+legend({'Cart Displacement','Constraints'},'Location','Best','FontSize',16);
+set(gca, 'FontName', 'Helvetica');
+set(gca, 'FontSize', 18);
+box on
+hold off
+exportgraphics(gca, 'CEoptExample82.eps', 'Resolution', 300);
 
 % objective function
 function F = MyObjFunc(x)

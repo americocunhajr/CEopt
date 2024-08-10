@@ -76,7 +76,7 @@ for n=1:CEobj.iter
     leg = legend('real system','noisly data','identified model');
     set(leg,'FontSize',16);
     set(gca,'FontSize',18);
-    saveFileName = sprintf('MSD_%d.eps',n);
+    saveFileName = sprintf('CEoptExample4_%d.eps',n);
     exportgraphics(gca, saveFileName, 'Resolution', 300);
 end
 
