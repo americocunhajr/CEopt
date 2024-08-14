@@ -191,7 +191,7 @@ end
 The CE method, which underpins the CEopt package, is inherently stochastic. This means that each run of the optimization process might follow a different trajectory towards the optimum due to the random sampling involved in the method. Therefore, it is entirely normal for repeated executions of the same optimization task to yield different paths or convergence profiles. Users are encouraged to consider multiple runs or adjust the `sigma0` parameter to manage the exploration-exploitation balance and potentially achieve more consistent results.
 
 ### Reproducibility
-The tutorials of **CEopt** package are fully reproducible. You can find a fully reproducible capsule of the simulations on <a href="https://codeocean.com/capsule/xxx" target="_blank">CodeOcean</a>.
+The tutorials of **CEopt** package are fully reproducible. You can find a fully reproducible capsule of the simulations on <a href="https://codeocean.com/capsule/0007851/tree" target="_blank">CodeOcean</a>.
 
 ### Documentation
 The routines in **CEopt** package are well-commented to explain their functionality. Each routine includes a description of its purpose, as well as inputs and outputs. Detailed documentation about the code functionality can be found in paper.
