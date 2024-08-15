@@ -46,7 +46,7 @@ To install and get started with **CEopt**, follow these steps:
    ```
 3. Open Matlab and add the directory to the Matlab path:
    ```bash
-   addpath(genpath('path_to_CEopt_directory/CEopt/CEopt-1.0'))
+   addpath 'path_to_CEopt_directory/CEopt/CEopt-1.0'
    ```
 
 ### Usage
