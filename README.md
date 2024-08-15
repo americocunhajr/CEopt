@@ -23,7 +23,7 @@
 
 ### Overview
 **CEopt** was developed to provide a robust and scalable solution for nonconvex optimization problems using the Cross-Entropy method. More details can be found in the following paper:
-- **A. Cunha Jr, M. V. Issa, J. C. Basilio, and J. G. Telles Ribeiro**, *CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method, 2024 (under review)*
+- **A. Cunha Jr, M. V. Issa, J. C. Basilio, and J. G. Telles Ribeiro**, *CEopt: A MATLAB Package for Non-convex Optimization with the Cross-Entropy Method, 2024 (under review)*
 
 Preprint available at: [Preprint Link](xxx)
 
@@ -211,12 +211,12 @@ The routines in **CEopt** package are well-commented to explain their functional
 
 ### Citing CEopt
 If you use **CEopt** in your research, please cite the following publication:
-- *A. Cunha Jr, M. V. Issa, J. C. Basilio and J. G. Telles Ribeiro, CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method, 2024 (under review)*
+- *A. Cunha Jr, M. V. Issa, J. C. Basilio and J. G. Telles Ribeiro, CEopt: A MATLAB Package for Non-convex Optimization with the Cross-Entropy Method, 2024 (under review)*
 
 ```
 @article{CunhaJr2024CEopt,
    author  = {A {Cunha~Jr} and M. V. Issa and J. C. Basilio and J. G. {Telles Ribeiro}},
-   title   = "{CEopt: A MATLAB Package for Nonconvex Optimization with the Cross-Entropy Method}",
+   title   = "{CEopt: A MATLAB Package for Non-convex Optimization with the Cross-Entropy Method}",
    journal = {Under Review},
    year    = {2024},
    volume  = {~},
