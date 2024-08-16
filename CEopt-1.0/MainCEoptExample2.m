@@ -28,7 +28,7 @@ CEstr.q            = 10;      % Smoothing parameter
 
 % CE optimizer
 tic
-[X_opt,F_opt,ExitFlag,CEstr] = CEopt(F,mu0,sigma0,lb,ub,[],CEstr)
+[Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,mu0,sigma0,lb,ub,[],CEstr)
 toc
 
 % objective function

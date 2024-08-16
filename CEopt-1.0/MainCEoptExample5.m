@@ -30,7 +30,7 @@ function F = MyObjFunc(x,p)
     thetaA = p(3,:);
     a0     = 1;
     b0     = x(1);
-    c0     = b0;
+    c0     = x(1);
     d0     = x(2);
     gamma  = x(3);
     thetaD = x(4);
@@ -49,5 +49,7 @@ function F = MyObjFunc(x,p)
     xEc1 = (xEc0 - mean(xEc0))/(max(xEc0) - min(xEc0));
     yEc1 = (yEc0 - mean(yEc0))/(max(xEc0) - min(xEc0));
     
-    F = sum(abs(xE1 - xEc1) + abs(yE1 - yEc1));
+    F1 = sum((xE1 - real(xEc1)).^2 + (yE1 - real(yEc1)).^2);
+    F2 = sum(abs(imag(xEc1).^2) + abs(imag(yEc1).^2) + abs(imag(thetaB).^2));
+    F  = F1 + F2;
 end

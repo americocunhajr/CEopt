@@ -1,11 +1,11 @@
 % -----------------------------------------------------------------
 %  CEopt.m
 % -----------------------------------------------------------------
-%  programmer: Americo Cunha Jr
+%  Programmer: Americo Cunha Jr
 %              americo.cunhajr@gmail.com
 %
 %  Originally programmed in: Jun 18, 2021
-%           Last updated in: Apr 10, 2024
+%           Last updated in: Aug 15, 2024
 % -----------------------------------------------------------------
 %  This routine employs the Cross-entropy (CE) method to solve the 
 %  following optimization problem:
@@ -106,12 +106,32 @@
 %  CEstr   -  The updated Cross-Entropy object struct containing the final
 %             state  of  the  algorithm and possibly additional diagnostic
 %             information.
+% -----------------------------------------------------------------
+%  References:
 %  
-%  Reference:
-%  Reuven Y. Rubinstein, Dirk P. Kroese
-%  The Cross-Entropy Method: A Unified Approach to Combinatorial 
-%  Optimization, Monte-Carlo Simulation, and Machine Learning
-%  Springer-Verlag, 2004.
+%  [1] Reuven Y. Rubinstein, Dirk P. Kroese,
+%      The Cross-Entropy Method: A Unified Approach to Combinatorial 
+%      Optimization, Monte-Carlo Simulation, and Machine Learning,
+%      Springer-Verlag, 2004.
+%  
+%  [2] A. Cunha Jr, M. V. Issa, J. C. Basilio, J. G. Telles Ribeiro,
+%      CEopt: A MATLAB Package for Non-convex Optimization with the
+%      Cross-Entropy Method, ArXiv, 2024
+% -----------------------------------------------------------------
+%  Copyright (C) 2024  Americo Cunha Jr et al.
+% 
+%  This program is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+%
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+%
+%  You should have received a copy of the GNU General Public License
+%  along with this program. If not, see <https://www.gnu.org/licenses/>.
 % -----------------------------------------------------------------
 function [Xopt,Fopt,ExitFlag,CEstr] = ...
                     CEopt(fun,xmean0,sigma0,lb,ub,nonlcon,CEstr)
