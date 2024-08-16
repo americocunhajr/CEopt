@@ -228,7 +228,7 @@ If you use **CEopt** in your research, please cite the following publication:
 ### License
 **CEopt** is released under the GNU General Public License v3.0. See the LICENSE file for details. All new contributions must be made under the MIT license.
 
-<img src="logo/GPLv3_Logo.png" width="10%"> 
+<img src="logo/GPLv3_Logo.png" width="20%"> 
 
 ### Institutional support
 
