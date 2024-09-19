@@ -160,7 +160,7 @@ CEstr.isVectorized  = 1;       % vectorized function
 CEstr.TolCon        = 1.0e-6;  % relative tolerance
 
 tic
-[Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,[],[],lb,ub,nonlcon,CEstr)
+[Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,mu0,[],lb,ub,nonlcon,CEstr)
 toc
 
 % objective function
