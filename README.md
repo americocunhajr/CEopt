@@ -1,6 +1,6 @@
 ## Cross-Entropy Optimizer
 
-**CEopt: Cross-Entropy Optimizer** is a Matlab package that implements a framework for nonconvex optimization using the Cross-Entropy (CE) method. Due to the algorithm's relative simplicity, CEopt provides a transparent "gray-box" optimization solver with intuitive control parameters. It effectively handles both equality and inequality constraints through an augmented Lagrangian method, offering robustness and scalability for moderately sized complex problems. **CEopt**'s applicability and effectiveness are demonstrated through select case studies, making it a practical addition to optimization research and application toolsets.
+**CEopt: Cross-Entropy Optimizer** is a Matlab package that implements a framework for non-convex optimization using the Cross-Entropy (CE) method. Due to the algorithm's relative simplicity, CEopt provides a transparent "gray-box" optimization solver with intuitive control parameters. It effectively handles both equality and inequality constraints through an augmented Lagrangian method, offering robustness and scalability for moderately sized complex problems. **CEopt**'s applicability and effectiveness are demonstrated through select case studies, making it a practical addition to optimization research and application toolsets.
 
 <p align="center">
 <img src="logo/CEoptStructure.png" width="80%">
@@ -22,13 +22,13 @@
 - [Contact](#contact)
 
 ### Overview
-**CEopt** was developed to provide a robust and scalable solution for nonconvex optimization problems using the Cross-Entropy method. More details can be found in the following paper:
+**CEopt** was developed to provide a robust and scalable solution for non-convex optimization problems using the Cross-Entropy method. More details can be found in the following paper:
 - **A. Cunha Jr, M. V. Issa, J. C. Basilio, and J. G. Telles Ribeiro**, *CEopt: A MATLAB Package for Non-convex Optimization with the Cross-Entropy Method*, PrePrint, 	arXiv:2409.00013, 2024, DOI https://doi.org/10.48550/arXiv.2409.00013
 
 Preprint available at: [https://doi.org/10.48550/arXiv.2409.00013](https://doi.org/10.48550/arXiv.2409.00013)
 
 ### Features
-- Implements Cross-Entropy method for nonconvex optimization
+- Implements Cross-Entropy method for non-convex optimization
 - Handles equality and inequality constraints using augmented Lagrangian method
 - Transparent "gray-box" optimization solver with intuitive control parameters
 - Robust and scalable for moderately sized complex problems
