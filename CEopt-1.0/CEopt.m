@@ -5,7 +5,7 @@
 %              americo.cunhajr@gmail.com
 %
 %  Originally programmed in: Jun 18, 2021
-%           Last updated in: Aug 15, 2024
+%           Last updated in: Dec 11, 2024
 % -----------------------------------------------------------------
 %  This routine employs the Cross-entropy (CE) method to solve the 
 %  following optimization problem:
@@ -74,6 +74,7 @@
 %  * NonlconAlgorithm : algorithm to handle nonlinear constraints
 %  * InitialPenalty   : initial penalty value for the augmented Lagrangian
 %  * PenaltyFactor    : factor by which the penalty parameter is increased
+%  * MaximumPenalty   : maximum value for the penalty parameter
 %  * xmean            : history of mean value over iterations
 %  * xmedian          : history of median over iterations
 %  * xbest            : history of best sample point over iterations
@@ -291,7 +292,8 @@ function CEstr = InitializeCEstr(CEstr,Nvars)
         'q'               ,10         , ...
         'NonlconAlgorithm','AugLagLog', ... 
         'InitialPenalty'  ,10         , ...
-        'PenaltyFactor'   ,100          ...
+        'PenaltyFactor'   ,100        , ...
+        'MaximumPenalty'  ,+Inf         ...
     );
     
     % assign values for undefined fields in CEstr
@@ -511,10 +513,8 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
         CEstr.Fcount       = Fcount;
         CEstr.xmean(t,:)   = xmean;
         CEstr.xmedian(t,:) = xmedian;
-        %CEstr.xbest(t,:)   = xbest;
         CEstr.Fmean(t)     = Fmean;
         CEstr.Fmedian(t)   = Fmedian;
-        %CEstr.Fbest(t)     = Fbest;
         CEstr.sigma(t,:)   = sigma;
         CEstr.ErrorS(t)    = ErrorS;
 
@@ -569,8 +569,9 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
     ExitFlag    = 0;                 % termination condition flag
     
     % initialize penalty parameters
-    Penalty       = CEstr.InitialPenalty;
-    PenaltyFactor = CEstr.PenaltyFactor;
+    Penalty        = CEstr.InitialPenalty;
+    PenaltyFactor  = CEstr.PenaltyFactor;
+    MaximumPenalty = CEstr.MaximumPenalty;
 
     % initialize Lagrange multipliers
     [G0,H0] = nonlcon(xmean0);
@@ -578,6 +579,9 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
     if isempty(H0), H0 = 0.0; end
     lambdaG = zeros(size(G0));
     lambdaH = zeros(size(H0));
+
+    % initialize constraint error
+    ErrorC = ComputeErrorC(G0,H0,lambdaG,lambdaH,Penalty,TolCon,1.0);
     
     % preallocate memory for design variables samples
     X = zeros(Nsamp,Nvars);
@@ -620,16 +624,20 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
         % standard deviation error
         [ErrorS,SmallErrorS] = ComputeErrorS(sigma,sigma0,TolAbs,TolRel);
 
-        % update Lagrange multipliers
-        [lambdaG,lambdaH,G,H] = ...
-                UpdateLagrangeMult(xbest,nonlcon,lambdaG,lambdaH,Penalty);
-        
-        % constraint error
+        % evalute the constraints at xbest
+        [G,H] = nonlcon(xbest);
+
+        % evaluate the constraint error
         [ErrorC,SmallErrorC] = ...
-                        ComputeErrorC(G,H,lambdaG,lambdaH,Penalty,TolCon);
+                ComputeErrorC(G,H,lambdaG,lambdaH,Penalty,TolCon,ErrorC);
+        
+        % update Lagrange multipliers
+        [lambdaG,lambdaH] = ...
+                        UpdateLagrangeMult(G,H,lambdaG,lambdaH,Penalty);
 
         % update pentalty parameter
-        Penalty = UpdatePenalty(Penalty,PenaltyFactor,SmallErrorC);
+        Penalty = ...
+          UpdatePenalty(Penalty,PenaltyFactor,MaximumPenalty,SmallErrorC);
         
         % update old parameters
         xmean0 = xmean;
@@ -654,10 +662,8 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
         CEstr.Fcount       = Fcount;
         CEstr.xmean(t,:)   = xmean;
         CEstr.xmedian(t,:) = xmedian;
-        %CEstr.xbest(t,:)   = xbest;
         CEstr.Fmean(t)     = Fmean;
         CEstr.Fmedian(t)   = Fmedian;
-        %CEstr.Fbest(t)     = Fbest;
         CEstr.sigma(t,:)   = sigma;
         CEstr.ErrorS(t)    = ErrorS;
         CEstr.ErrorC(t)    = ErrorC;
@@ -833,11 +839,10 @@ end
 % -----------------------------------------------------------------
 % UpdateLagrangeMult - update Lagrange multipliers
 % -----------------------------------------------------------------
-function [lambdaG,lambdaH,G,H] = ...
-              UpdateLagrangeMult(x,nonlcon,lambdaG,lambdaH,Penalty)
+function [lambdaG,lambdaH] = ...
+                 UpdateLagrangeMult(G,H,lambdaG,lambdaH,Penalty)
     
-    % nonlinear constraints at x
-    [G,H] = nonlcon(x);
+    % check the nonlinear constraints
     if isempty(G), G = 0.0; end
     if isempty(H), H = 0.0; end
 
@@ -853,28 +858,33 @@ end
 % ComputeErrorC - compute constraint error
 % -----------------------------------------------------------------
 function [ErrorC,SmallErrorC] = ...
-                 ComputeErrorC(G,H,lambdaG,lambdaH,Penalty,TolCon)
+                 ComputeErrorC(G,H,lambdaG,lambdaH,Penalty,TolCon,ErrorC0)
+
+    % check the nonlinear constraints
+    if isempty(G), G = 0.0; end
+    if isempty(H), H = 0.0; end
 
     % constraints violation metrics
-    ViolationEq  = max(abs(H));
-    ViolationIn  = max(min(-G,lambdaG/Penalty));
+    ViolationEqNorm = norm(H,Inf);
+    ViolationInNorm = norm(min(-G,lambdaG/Penalty),Inf);
     
     % constraints violation error
-    ErrorC = max(ViolationIn,ViolationEq);
+    ErrorC = max(ViolationEqNorm,ViolationInNorm);
 
     % convergence indicator for constraint violation
-    SmallErrorC = abs(ErrorC) <= TolCon;
+    SmallErrorC = ErrorC <= TolCon*ErrorC0;
 end
 % -----------------------------------------------------------------
 
 % -----------------------------------------------------------------
 % UpdatePenalty - update penalty parameter
 % -----------------------------------------------------------------
-function Penalty = UpdatePenalty(Penalty,PenaltyFactor,SmallErrorC)
+function Penalty = ...
+    UpdatePenalty(Penalty,PenaltyFactor,MaximumPenalty,SmallErrorC)
 
     % update penalty parameter
     if ~SmallErrorC
-        Penalty = PenaltyFactor*Penalty;
+        Penalty = min(PenaltyFactor*Penalty,MaximumPenalty);
     end
 end
 % -----------------------------------------------------------------
