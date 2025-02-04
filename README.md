@@ -222,6 +222,7 @@ If you use **CEopt** in your research, please cite the following publication:
    volume  = {arXiv:2409.00013},
    pages   = {~},
    doi    = {10.48550/arXiv.2409.00013},
+   url    = {https://ceopt.org},
 }
 ```
 
