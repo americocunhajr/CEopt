@@ -233,11 +233,11 @@ If you use **CEopt** in your research, please cite the following publication:
 
 ### Institutional support
 
-<img src="logo/logo_uerj_color.jpeg" width="10%">
+<img src="logo/logo_uerj_color.jpeg" width="10%"> &nbsp; &nbsp; <img src="logo/logo_lncc.png" width="25%">  
 
 ### Funding
 
-<img src="logo/cnpq.png" width="20%"> &nbsp; &nbsp; <img src="logo/capes.png" width="10%">  &nbsp; &nbsp; &nbsp; <img src="logo/faperj.jpg" width="20%">
+<img src="logo/cnpq.png" width="20%"> &nbsp; &nbsp; <img src="logo/capes.png" width="10%">  &nbsp; &nbsp; &nbsp; <img src="logo/faperj.png" width="25%">
 
 ### Contact
 For any questions or further information, please contact:
