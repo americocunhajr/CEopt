@@ -233,7 +233,7 @@ If you use **CEopt** in your research, please cite the following publication:
 
 ### Institutional support
 
-<img src="logo/logo_uerj.png" width="10%"> &nbsp; &nbsp; <img src="logo/logo_lncc.png" width="25%">  
+<img src="logo/logo_uerj.png" width="12%"> &nbsp; &nbsp; <img src="logo/logo_lncc.png" width="25%">  
 
 ### Funding
 
