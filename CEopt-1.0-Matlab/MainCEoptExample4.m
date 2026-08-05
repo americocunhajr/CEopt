@@ -28,20 +28,5 @@ CEstr.TolRel = 1.0e-2;  % Relative tolerance
 
 % CE optimizer
 tic
-[Xopt,Fopt,ExitFlag,CEobj] = CEopt(F,[],[],lb,ub,[],CEstr)
+[Xopt,Fopt,ExitFlag,CEobj] = CEopt(F,[],[],lb,ub,[],CEstr);
 toc
-
-% Misfit function 
-function J = MyMisfitFunc(x,ydata,tspan)
-    [Ns,Nvars] = size(x);     % input dimensions
-             J = zeros(Ns,1); % preallocate memory for J
-            wn = x(:,1);      % model parameter 1
-           ksi = x(:,2);      % model parameter 2
-            y0 = x(:,3);      % model parameter 3
-            v0 = x(:,4);      % model parameter 4
-    for n = 1:Ns
-        dydt = @(t,y) [0 1; -wn(n)^2 -2*ksi(n)*wn(n)]*y;
-        [time,ymodel] = ode45(dydt,tspan,[y0(n) v0(n)]);
-        J(n) = norm(ydata-ymodel(:,1))/sqrt(length(ydata));
-    end
-end

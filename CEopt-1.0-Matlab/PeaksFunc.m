@@ -1,0 +1,1 @@
+% Objective function for Example 2function F = PeaksFunc(x)    x1 = x(:,1);    x2 = x(:,2);     F = 3*(1-x1).^2.*exp(-x1.^2 - (x2+1).^2) ...       - 10*(x1/5 - x1.^3 - x2.^5).*exp(-x1.^2 - x2.^2)...       - (1/3)*exp(-(x1+1).^2 - x2.^2);end

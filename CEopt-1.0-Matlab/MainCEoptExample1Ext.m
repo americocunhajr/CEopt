@@ -5,9 +5,12 @@
 %              americo.cunhajr@gmail.com
 %
 %  Originally programmed in: Jun 18, 2021
-%           Last updated in: Jul 24, 2024
+%           Last updated in: Aug 13, 2025
 % -----------------------------------------------------------------
-%  ﻿Example 1: A Gaussian mixture in 1D
+%  ﻿Example 1: A bi-modal function in 1D
+% -----------------------------------------------------------------
+% This script is just compatible with MATLAB due to the use of
+% 'RandStream' and 'exportgraphics' functions.
 % -----------------------------------------------------------------
 
 clc; clear; close all;
@@ -33,7 +36,7 @@ sigma0 = (ub-lb)/6;
 
 % CE optimizer
 tic
-[Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,mu0,sigma0,lb,ub)
+[Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,mu0,sigma0,lb,ub);
 toc
 
 % domain for plotting

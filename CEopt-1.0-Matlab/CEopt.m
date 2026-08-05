@@ -5,7 +5,7 @@
 %              americo.cunhajr@gmail.com
 %
 %  Originally programmed in: Jun 18, 2021
-%           Last updated in: Dec 11, 2024
+%           Last updated in: Aug 13, 2025
 % -----------------------------------------------------------------
 %  This routine employs the Cross-entropy (CE) method to solve the 
 %  following optimization problem:
@@ -22,7 +22,7 @@
 %  - lb  : (1 x Nvars) vector of lower bounds for the decision variables
 %  - ub  : (1 x Nvars) vector of upper bounds for the decision variables
 %  - g(x): R^Nvars -> R^m is a vector of m inequality constraint functions
-%  - h(x): R^Nvars -> R^p is a vector of p equality constraint functions
+%  - h(x): R^Nvars -> R^p is a vector of p equality   constraint functions
 %
 %  The  goal  is  to  minimize the scalar objective function F(x) defined 
 %  within  a  known  rectangular  domain  (feasible  region),  while also 
@@ -50,7 +50,7 @@
 %  sigma0  - (1 x Nvars) intial standard deviation
 %  lb      - (1 x Nvars) lower bound
 %  ub      - (1 x Nvars) upper bound
-%  nonlcon - nonlinear constraint function
+%  nonlcon - Function handle for the nonlinear constraint function.
 %  CEstr   -  Struct containing parameters and settings for the CE method.
 %  
 %  CEstr fields include:
@@ -196,14 +196,14 @@ end
 function [lb,ub,xmean0,sigma0,Nvars] = ...
                            CheckInput(lb,ub,xmean0,sigma0)
 
-    % ensure lb and ub are row vectors
-    lb = lb(:)';
-    ub = ub(:)';
-    
     % check if lb and ub are empty
     if isempty(lb) || isempty(ub)
         error('lb and ub must be non-empty')
     end
+
+    % ensure lb and ub are row vectors
+    lb = lb(:)';
+    ub = ub(:)';
     
     % number of variables
     Nvars = length(lb);
@@ -221,16 +221,12 @@ function [lb,ub,xmean0,sigma0,Nvars] = ...
     
     % define xmean0 (if necessary)
     if isempty(xmean0)
-        xmean0                = (ub+lb)/2;
-        xmean0(isinf(xmean0)) = 0.0;
-        xmean0(isnan(xmean0)) = 0.0;
+        xmean0 = (ub+lb)/2;
     end
     
     % define sigma0 (if necessary)
     if isempty(sigma0)
-        sigma0                = (ub-lb)/sqrt(12);
-        sigma0(isinf(sigma0)) = 1.0;
-        sigma0(isnan(sigma0)) = 1.0;
+        sigma0 = (ub-lb)/sqrt(12);
     end
     
     % ensure xmean0 and sigma0 are row vectors
@@ -335,10 +331,20 @@ end
 function CheckCEstr(CEstr)
 
     % flag to show output on screem
-    if mod(CEstr.Verbose,1) ~= 0
-        error('Verbose must be integer')
+    if ~islogical(CEstr.Verbose)
+        error('Verbose must be boolean')
+    end
+    
+    % constrained problem flag
+    if ~islogical(CEstr.isConstrained)
+        error('isConstrained must be boolean')
     end
 
+    % vectorized function flag
+    if ~islogical(CEstr.isVectorized)
+        error('isVectorized must be boolean')
+    end
+    
     % elite samples percentage
     if ~isnumeric(CEstr.PenaltyFactor)   || ...
                   CEstr.EliteFactor <= 0 || ...
@@ -423,6 +429,11 @@ function CheckCEstr(CEstr)
     if ~isnumeric(CEstr.PenaltyFactor) || CEstr.PenaltyFactor <= 1
         error('PenaltyFactor must be greather than 1')
     end
+
+    % maximum penalty
+    if ~isnumeric(CEstr.MinFval) || CEstr.MaximumPenalty <= 1
+        error('MaximumPenalty must be greather than 1 or infinity')
+    end
 end
 % -----------------------------------------------------------------
 
@@ -453,9 +464,10 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
     X = zeros(Nsamp,Nvars);
     
     % preallocate memory for objective function (if necessary)
-    if ~CEstr.isVectorized
-        F = NaN*ones(Nsamp,1);
-    end
+    F = NaN*ones(Nsamp,1);
+
+    % one-time dimensions validation flag
+    FirstCheckFlag = true;
 
     % loop to sample the domain and update the distribution
     while ExitFlag == 0 && t <= MaxIter
@@ -475,6 +487,12 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
         else
             % case where fun is a vectorized function
             F = fun(X);
+            if FirstCheckFlag
+                if ~isnumeric(F) || ~isequal(size(F), [Nsamp 1])
+                    error('Vectorized function must return a Nsamp x 1 array')
+                end
+                FirstCheckFlag = false;
+            end
         end
         
         % update function evalution counter
@@ -551,22 +569,22 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
            ConstrSolverCE(fun,Nvars,xmean0,sigma0,lb,ub,nonlcon,CEstr)
 
     % initialize parameters
-    t           = 0;                 % iteration counter
-    stall       = 0;                 % stall iterations counter
-    Fcount      = 0;                 % function evaluation counter
-    EliteFactor = CEstr.EliteFactor; % elite factor
-    Nsamp       = CEstr.Nsamp;       % total number of samples
-    Nelite      = EliteFactor*Nsamp; % number of elite samples
-    MaxIter     = CEstr.MaxIter;     % maximum of iterations
-    TolAbs      = CEstr.TolAbs;      % absolute   tolerance
-    TolRel      = CEstr.TolRel;      % relative   tolerance
-    TolCon      = CEstr.TolCon;      % constraint tolerance
-    alpha       = CEstr.alpha;       % smoothing parameter for mean
-    beta        = CEstr.beta;        % smoothing parameter for std. dev.
-    q           = CEstr.q;           % dynamic update parameter
-    Xopt        = NaN*xmean0;        % optimal point
-    Fopt        = +Inf;              % optimal value
-    ExitFlag    = 0;                 % termination condition flag
+    t           = 0;                        % iteration counter
+    stall       = 0;                        % stall iterations counter
+    Fcount      = 0;                        % function evaluation counter
+    EliteFactor = CEstr.EliteFactor;        % elite factor
+    Nsamp       = CEstr.Nsamp;              % total number of samples
+    Nelite      = round(EliteFactor*Nsamp); % number of elite samples
+    MaxIter     = CEstr.MaxIter;            % maximum of iterations
+    TolAbs      = CEstr.TolAbs;             % absolute   tolerance
+    TolRel      = CEstr.TolRel;             % relative   tolerance
+    TolCon      = CEstr.TolCon;             % constraint tolerance
+    alpha       = CEstr.alpha;              % smoothing parameter for mean
+    beta        = CEstr.beta;               % smoothing parameter for std. dev.
+    q           = CEstr.q;                  % dynamic update parameter
+    Xopt        = NaN*xmean0;               % optimal point
+    Fopt        = +Inf;                     % optimal value
+    ExitFlag    = 0;                        % termination condition flag
     
     % initialize penalty parameters
     Penalty        = CEstr.InitialPenalty;
@@ -574,6 +592,10 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
     MaximumPenalty = CEstr.MaximumPenalty;
 
     % initialize Lagrange multipliers
+    %   G0      - (1 x Ng) inequality constraints vector at xmean0
+    %   H0      - (1 x Nh) equality   constraints vector at xmean0
+    %   lambdaG - (1 x Ng) Lagrange multipliers for inequality constraints
+    %   lambdaH - (1 x Nh) Lagrange multipliers for   equality constraints
     [G0,H0] = nonlcon(xmean0);
     if isempty(G0), G0 = 0.0; end
     if isempty(H0), H0 = 0.0; end
@@ -587,9 +609,11 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
     X = zeros(Nsamp,Nvars);
 
     % preallocate memory for objective function (if necessary)
-    if ~CEstr.isVectorized
-        F = NaN*ones(Nsamp,1);
-    end
+    AL = NaN*ones(Nsamp,1);
+    F  = NaN*ones(Nsamp,1);
+
+    % one-time dimensions validation flag
+    FirstCheckFlag = true;
 
     % loop to sample the domain and update the distribution
     while ExitFlag == 0 && t <= MaxIter
@@ -604,28 +628,36 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
         if ~CEstr.isVectorized
             % case where fun is not a vectorized function
             for n = 1:Nsamp
-                F(n) = fun(X(n,:),lambdaG,lambdaH,Penalty);
+                [AL(n),F(n)] = fun(X(n,:),lambdaG,lambdaH,Penalty);
             end
         else
             % case where fun is a vectorized function
-            F = fun(X,lambdaG,lambdaH,Penalty);
+            [AL,F] = fun(X,lambdaG,lambdaH,Penalty);
+            if FirstCheckFlag
+                if ~isnumeric(AL) || ~isequal(size(AL), [Nsamp 1])
+                    error('Vectorized function must return a Nsamp x 1 array')
+                end
+                FirstCheckFlag = false;
+            end
         end
 
         % update function evalution counter
         Fcount = Fcount + Nsamp;
         
         % define elite samples set 
-        EliteSetId = DefineEliteSet(F,Nelite);
+        EliteSetId = DefineEliteSet(AL,Nelite);
 
         % update the distribution parameters
         [xmean,xmedian,xbest,Fmean,Fmedian,Fbest,sigma] = ...
-         UpdateDistribution(F,X,EliteSetId,xmean0,sigma0,alpha,beta,q,t);
+         UpdateDistribution(AL,X,EliteSetId,xmean0,sigma0,alpha,beta,q,t);
         
         % standard deviation error
         [ErrorS,SmallErrorS] = ComputeErrorS(sigma,sigma0,TolAbs,TolRel);
 
         % evalute the constraints at xbest
         [G,H] = nonlcon(xbest);
+        if isempty(G), G = 0.0; end
+        if isempty(H), H = 0.0; end
 
         % evaluate the constraint error
         [ErrorC,SmallErrorC] = ...
@@ -645,10 +677,11 @@ function [Xopt,Fopt,ExitFlag,CEstr] = ...
         
         % update the optimum
         if Fbest < Fopt
+           Felite           = F(EliteSetId);
            CEstr.xbest(t,:) = xbest;
-           CEstr.Fbest(t)   = Fbest;
+           CEstr.Fbest(t)   = Felite(1);
            Xopt             = xbest;
-           Fopt             = Fbest;
+           Fopt             = Felite(1);
            stall            = 0;
         else
             CEstr.xbest(t,:) = CEstr.xbest(t-1,:);
@@ -696,34 +729,46 @@ end
 
 % -----------------------------------------------------------------
 % AugLagrangian1 - augmented Lagrangian function (log formulation)
+%  lambdaG - (1 x Ng) Lagrange multipliers for inequality constraints
+%  lambdaH - (1 x Nh) Lagrange multipliers for   equality constraints
 % -----------------------------------------------------------------
 function [AL,F,G,H] = ...
             AugLagrangian1(x,fun,nonlcon,lambdaG,lambdaH,Penalty)
     
-    % objetive function
-    F = fun(x);
-
-    % nonlinear constraints
+    % evaluate objective and constraints
+    %   F - (Nsamp x  1) objective function samples
+    %   G - (Nsamp x Ng) inequality constraints samples
+    %   H - (Nsamp x Nh)   equality constraints samples
+       F  = fun(x);
     [G,H] = nonlcon(x);
+
+    % handle empty constraints
     if isempty(G), G = 0.0; end
     if isempty(H), H = 0.0; end
 
-    % shift 
+    % shift
     s = lambdaG/Penalty;
 
     % augmented Lagrangian function
-    AL = F - sum((s.*lambdaG).*log(s-G+eps),2) + ...
-                             H*(lambdaH')+ 0.5*Penalty*sum(H.^2,2);
+    term1 = - sum((s.*lambdaG).*log(s-G+eps),2);
+    term2 = H*(lambdaH');
+    term3 = 0.5*Penalty*sum(H.^2,2);
+    AL    = F + term1 + term2 + term3;
 end
 % -----------------------------------------------------------------
 
 % -----------------------------------------------------------------
 % AugLagrangian2 - augmented Lagrangian function (max formulation)
+%  lambdaG - (1 x Ng) Lagrange multipliers for inequality constraints
+%  lambdaH - (1 x Nh) Lagrange multipliers for   equality constraints
 % -----------------------------------------------------------------
 function [AL,F,G,H] = AugLagrangian2(x,fun,nonlcon,...
                                           lambdaG,lambdaH,Penalty)
     
     % objetive function
+    %   F - (Nsamp x  1) objective function samples
+    %   G - (Nsamp x Ng) inequality constraints samples
+    %   H - (Nsamp x Nh)   equality constraints samples
     F = fun(x);
 
     % nonlinear constraints
@@ -738,7 +783,9 @@ function [AL,F,G,H] = AugLagrangian2(x,fun,nonlcon,...
     G_s = G + lambdaG/Penalty;
 
     % augmented Lagrangian function
-    AL = F + 0.5*Penalty*(sum(H_s.^2,2) + sum(max(0,G_s).^2,2));
+    term1 = sum(H_s.^2,2);
+    term2 = sum(max(0,G_s).^2,2);
+    AL    = F + 0.5*Penalty*(term1 + term2);
 end
 % -----------------------------------------------------------------
 
@@ -841,10 +888,6 @@ end
 % -----------------------------------------------------------------
 function [lambdaG,lambdaH] = ...
                  UpdateLagrangeMult(G,H,lambdaG,lambdaH,Penalty)
-    
-    % check the nonlinear constraints
-    if isempty(G), G = 0.0; end
-    if isempty(H), H = 0.0; end
 
     % update Lagrange multipliers for equality constraints
     lambdaH = lambdaH + Penalty*H;
@@ -859,10 +902,6 @@ end
 % -----------------------------------------------------------------
 function [ErrorC,SmallErrorC] = ...
                  ComputeErrorC(G,H,lambdaG,lambdaH,Penalty,TolCon,ErrorC0)
-
-    % check the nonlinear constraints
-    if isempty(G), G = 0.0; end
-    if isempty(H), H = 0.0; end
 
     % constraints violation metrics
     ViolationEqNorm = norm(H,Inf);
@@ -955,7 +994,7 @@ function PrintProgress(t,Nvars,CEstr)
     % print header in the first level
     if t == 1 && Nvars <= 5
         if CEstr.isConstrained
-            MyHeader = ['\n iter   func value       error std dev',...
+            MyHeader = ['\n iter   best f(x)       std dev variat',...
                         '   error constr    design variable(s) \n'];
         else
             MyHeader = ['\n iter   func value       error std dev',...
@@ -967,10 +1006,10 @@ function PrintProgress(t,Nvars,CEstr)
                             ' 5 design variables on the screen \n'];
         fprintf(MyHeader);
         if CEstr.isConstrained
-            MyHeader = ['\n iter   func value       error std dev',...
+            MyHeader = ['\n iter   best f(x)       std dev variat',...
                         '   error constr \n'];
         else
-            MyHeader = '\n iter   func value       error std dev \n';
+            MyHeader = '\n iter   best f(x)       std dev variat \n';
         end
         fprintf(MyHeader);
     end
@@ -990,21 +1029,21 @@ function PrintProgress(t,Nvars,CEstr)
         end
         % values with x
         if CEstr.isConstrained
-            fprintf(MyString,t,CEstr.Fmean(t) ,...
+            fprintf(MyString,t,CEstr.Fbest(t) ,...
                                CEstr.ErrorS(t),...
                                CEstr.ErrorC(t),...
-                               CEstr.xmean(t,:));
+                               CEstr.xbest(t,:));
         else
-            fprintf(MyString,t,CEstr.Fmean(t) ,...
+            fprintf(MyString,t,CEstr.Fbest(t) ,...
                                CEstr.ErrorS(t),...
-                               CEstr.xmean(t,:));
+                               CEstr.xbest(t,:));
         end
     else
         % values without x
         if CEstr.isConstrained
-            fprintf(MyString,t,CEstr.Fmean(t),CEstr.ErrorS(t),CEstr.ErrorC(t));
+            fprintf(MyString,t,CEstr.Fbest(t),CEstr.ErrorS(t),CEstr.ErrorC(t));
         else
-            fprintf(MyString,t,CEstr.Fmean(t),CEstr.ErrorS(t));
+            fprintf(MyString,t,CEstr.Fbest(t),CEstr.ErrorS(t));
         end
     end
 end
@@ -1065,31 +1104,29 @@ function PrintEnd(Xopt, Fopt, ExitFlag, CEstr)
     disp(' Summary of the Optimization Process with the CE method ');
     disp('--------------------------------------------------------');
     
+    % Display the optimal point found
+    fprintf('Optimal Point  Found: %+.6E \n',Xopt(1));
+    for i = 1:length(Xopt)-1
+        fprintf('                      %+.6E \n', Xopt(i+1));
+    end
+    fprintf('\n');
+
     % Display the optimal value found
     fprintf('Optimal Value  Found: %+.6E\n', Fopt);
-    
-    % Display the optimal point found
-    fprintf('Optimal Point  Found: [');
-    for i = 1:length(Xopt)
-        fprintf('%+.6E ', Xopt(i));
-        if mod(i, 5) == 0 && i ~= length(Xopt)
-            % Break line for readability
-            fprintf('...\n              ');
-        end
-    end
-    fprintf(']\n');
+    fprintf('\n');
     
     % Display the number of iterations performed
     fprintf('Iterations Performed: %d\n', CEstr.iter);
+    fprintf('\n');
 
     % Display the number of stall iterations
     fprintf('Iterations on  Stall: %d\n', CEstr.stall);
+    fprintf('\n');
     
     % Display the total number of function evaluations
     fprintf('Function Evaluations: %d\n', CEstr.Fcount);
     disp('--------------------------------------------------------');
 end
-
 % -----------------------------------------------------------------
 
 % -----------------------------------------------------------------
@@ -1244,9 +1281,9 @@ function x = trnd(l,u)
                uy = u(I);
                 y = randn(size(ly));
               idx = y > ly & y < uy; % accepted
-        x(I(idx)) = y(idx);           % store the accepted
-                I = I(~idx);          % remove accepted from list
-                d = length(I);        % number of rejected
+        x(I(idx)) = y(idx);          % store the accepted
+                I = I(~idx);         % remove accepted from list
+                d = length(I);       % number of rejected
     end
 end
 % -----------------------------------------------------------------

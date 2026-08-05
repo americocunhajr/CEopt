@@ -33,20 +33,21 @@ nonlcon = @ConicConstraints;
 CEstr.isVectorized  = 1;       % vectorized function
 CEstr.TolCon        = 1.0e-6;  % constraint tolerance
 
+% CE optimizer
 tic
 [Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,mu0,[],lb,ub,nonlcon,CEstr)
 toc
 
 % meshgrid for visualization
-Ngrid  = 100;
-xRange = linspace(lb(1),ub(1),Ngrid);
-yRange = linspace(lb(2),ub(2),Ngrid);
-[X,Y]  = meshgrid(xRange,yRange);
-Z = F([X(:), Y(:)]);
-Z = reshape(Z, size(X));
+Ngrid   = 100;
+xRange  = linspace(lb(1),ub(1),Ngrid);
+yRange  = linspace(lb(2),ub(2),Ngrid);
+[X,Y]   = meshgrid(xRange,yRange);
+Z       = F([X(:), Y(:)]);
+Z       = reshape(Z, size(X));
 [C,Ceq] = nonlcon([X(:),Y(:)]);
-C   = reshape(C  ,size(X));
-Ceq = reshape(Ceq,size(X));
+C       = reshape(C  ,size(X));
+Ceq     = reshape(Ceq,size(X));
 
 % custom colors
 MyYellow = [0.9290 0.6940 0.1250];
@@ -122,12 +123,18 @@ hold off;
 % save the figure
 exportgraphics(gca, 'CEoptExample6.eps', 'Resolution', 300);
 
+
+[Xopt,Fopt] = ga(F,Nvars,[],lb,ub,nonlcon,CEstr)
+
 % objective function
 function F = PatternSearchFunc(x)
     x1 = x(:,1);
     x2 = x(:,2);
-    F = zeros(size(x1,1),1);
-    for i = 1:size(x,1)
+    
+    Nsamples = size(x1,1);
+    F        = zeros(Nsamples,1);
+    
+    for i = 1:Nsamples
         if  x1(i) < -5
             F(i) = (x1(i)+5).^2 + abs(x2(i));
         elseif x1(i) < -3
@@ -144,6 +151,13 @@ end
 function [G,H] = ConicConstraints(x)
     x1 = x(:,1);
     x2 = x(:,2);
-    G  = 2*x1.^2 + x2.^2 - 3;
-    H  = (x1+1).^2 - (x2/2).^4;
+
+    Nsamples = size(x1,1);
+    G        = zeros(Nsamples,1);
+    H        = zeros(Nsamples,1);
+
+    for i = 1:Nsamples
+        G(i)  = 2*x1(i)^2 + x2(i)^2 - 3;
+        H(i)  = (x1(i)+1)^2 - (x2(i)/2)^4;
+    end
 end

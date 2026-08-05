@@ -5,9 +5,12 @@
 %              jose.gt.ribeiro@gmail.com
 %
 %  Originally programmed in: Jun 20, 2024
-%           Last updated in: Jul 31, 2024
+%           Last updated in: Aug 13, 2025
 % -----------------------------------------------------------------
 %  ﻿Example 5: Design of a complex mechanism
+% -----------------------------------------------------------------
+% This script is just compatible with MATLAB due to the use of
+% 'RandStream' and 'exportgraphics' functions.
 % -----------------------------------------------------------------
 
 clc; clear; close all;
@@ -17,8 +20,8 @@ disp(' MainCEoptExample5.m ')
 disp(' ------------------- ')
 
 % random number generator (fix the seed for reproduc0b0lity)
-rng_stream = RandStream('mt19937ar','Seed',30081984);
-RandStream.setGlobalStream(rng_stream);
+%rng_stream = RandStream('mt19937ar','Seed',30081984);
+%RandStream.setGlobalStream(rng_stream);
 
 % data points
 load Example5data.mat
@@ -35,7 +38,7 @@ ub = [2.5; 3.5; 150.0; - 5.0; -35.0];
 
 % CE optimizer
 tic
-[Xopt, Fopt, ExitFlag, CEstr] = CEopt(F, [], [], lb, ub)
+[Xopt, Fopt, ExitFlag, CEstr] = CEopt(F, [], [], lb, ub);
 toc
 
 % plot optimal mechanism
@@ -90,34 +93,4 @@ box on;
 hold off
 
 % save the figure
-exportgraphics(gca, 'CEoptExample5.eps', 'Resolution', 300);
-
-% objective function
-function F = MyObjFunc(x,p)
-
-    xE     = p(1,:);
-    yE     = p(2,:);
-    thetaA = p(3,:);
-    a0     = 1;
-    b0     = x(1);
-    c0     = b0;
-    d0     = x(2);
-    gamma  = x(3);
-    thetaD = x(4);
-    theta0 = x(5);
-    
-    thetaE = (180-gamma)/2;
-    e0     = 2*b0*cosd(thetaE);
-    m      = sqrt(a0^2 + d0^2 - 2*a0*d0*cosd(thetaA + theta0));
-    beta   = asind(a0*sind(thetaA + theta0)./m);
-    thetaB = acosd((b0^2 + m.^2 - c0^2)./(2*b0*m)) - beta;
-    xEc0   = a0*cosd(thetaA+theta0+thetaD)+e0*cosd(thetaB+thetaE+thetaD);
-    yEc0   = a0*sind(thetaA+theta0+thetaD)+e0*sind(thetaB+thetaE+thetaD);
-    
-    xE1  = (xE   - mean(xE)  )/(max(xE)   - min(xE)  );
-    yE1  = (yE   - mean(yE)  )/(max(xE)   - min(xE)  );
-    xEc1 = (xEc0 - mean(xEc0))/(max(xEc0) - min(xEc0));
-    yEc1 = (yEc0 - mean(yEc0))/(max(xEc0) - min(xEc0));
-    
-    F = sum(abs(xE1 - xEc1) + abs(yE1 - yEc1));
-end
+%exportgraphics(gca, 'CEoptExample5.eps', 'Resolution', 300);

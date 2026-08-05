@@ -5,9 +5,12 @@
 %              americo.cunhajr@gmail.com
 %
 %  Originally programmed in: Jun 18, 2021
-%           Last updated in: Jul 24, 2024
+%           Last updated in: Aug 13, 2025
 % -----------------------------------------------------------------
 %  ﻿Example 4: Identification of a harmonic oscillator
+% -----------------------------------------------------------------
+% This script is just compatible with MATLAB due to the use of
+% 'RandStream' and 'exportgraphics' functions.
 % -----------------------------------------------------------------
 
 clc; clear; close all;
@@ -44,7 +47,7 @@ CEstr.TolRel = 1.0e-2;  % relative tolerance
 
 % CE optimizer
 tic
-[Xopt,Fopt,ExitFlag,CEobj] = CEopt(F,[],[],lb,ub,[],CEstr)
+[Xopt,Fopt,ExitFlag,CEobj] = CEopt(F,[],[],lb,ub,[],CEstr);
 toc
 
 % animation of the parameters identification process
@@ -78,19 +81,4 @@ for n=1:CEobj.iter
     set(gca,'FontSize',18);
     saveFileName = sprintf('CEoptExample4_%d.eps',n);
     exportgraphics(gca, saveFileName, 'Resolution', 300);
-end
-
-% Misfit function
-function J = MyMisfitFunc(x,ydata,tspan)
-    [Ns,Nvars] = size(x);     % input dimensions
-             J = zeros(Ns,1); % preallocate memory for J
-            wn = x(:,1);      % model parameter 1
-           ksi = x(:,2);      % model parameter 2
-            y0 = x(:,3);      % model parameter 3
-            v0 = x(:,4);      % model parameter 4
-    for n = 1:Ns
-        dydt = @(t,y) [0 1; -wn(n)^2 -2*ksi(n)*wn(n)]*y;
-        [time,ymodel] = ode45(dydt,tspan,[y0(n) v0(n)]);
-        J(n) = norm(ydata-ymodel(:,1))/sqrt(length(ydata));
-    end
 end

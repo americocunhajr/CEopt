@@ -5,7 +5,7 @@
 %              marcosviniciusissa@gmail.com
 %
 %  Originally programmed in: Apr 04, 2024
-%           Last updated in: Aug 23, 2024
+%           Last updated in: Jun 12, 2025
 % -----------------------------------------------------------------
 %  ﻿Example 7: Nonconvex structural optimization
 % -----------------------------------------------------------------
@@ -75,11 +75,14 @@ toc
 
 % check constraint violation
 disp(' ')
+disp('--------------------------------------------------------');
 disp('Check if inequality constraints are <= 0')
+disp('--------------------------------------------------------');
 G = nonlcon(Xopt);
 for i=1:length(G)
   fprintf('G(%d) =  %5.2f\n',i,G(i));
 end
+disp('--------------------------------------------------------');
 
 % plot the nominal truss structure
 PlotTruss10(xmean0*400,MyTruss,'Non-optimal Truss Structure');

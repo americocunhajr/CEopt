@@ -5,7 +5,7 @@
 %              americo.cunhajr@gmail.com
 %
 %  Originally programmed in: Jul 31, 2024
-%           Last updated in: Jul 31, 2024
+%           Last updated in: Jun 12, 2025
 % -----------------------------------------------------------------
 %  ﻿Example 9: SINDy
 % -----------------------------------------------------------------
@@ -86,13 +86,19 @@ Nbasis = size(THETA_X,2);
 Nstates = size(dXdt,2);
 
 % identified coefficients via CE
+disp(' ');
+disp('--------------------------------------------------------');
 fprintf('Identified coefficients:\n');
 XI_ce = reshape(XI_ce,[Nbasis,Nstates])
+disp('--------------------------------------------------------');
 
 % thresholded coefficients via CE
+disp(' ');
+disp('--------------------------------------------------------');
 fprintf('Thresholded coefficients:\n');
 small_coeff  = abs(XI_ce) < lambda;
 XI_ce(small_coeff) = 0.0
+disp('--------------------------------------------------------');
 
 % small coefficients in XI_ls
 %       XI_ls = reshape(XI_ls,[],Nstates)

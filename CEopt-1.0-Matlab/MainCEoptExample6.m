@@ -1,30 +1,31 @@
 clc; clear; close all;
 
 disp(' ------------------- ')
-disp(' MainCEoptExample6Ext.m ')
+disp(' MainCEoptExample6.m ')
 disp(' ------------------- ')
-
-% bound for design variables
-lb = [-6 -4];
-ub = [ 2  4];
 
 % objective function and constraints
 F       = @PatternSearchFunc;
 nonlcon = @ConicConstraints;
 
+% bound for design variables and initial mean
+lb  = [-6 -4];
+ub  = [ 2  4];
+mu0 = [-4  2];
+
 % cross-entropy optimizer struct
-CEobj.isVectorized  = 1;       % vectorized function
-CEobj.TolCon        = 1.0e-6;  % relative tolerance
+CEstr.isVectorized  = 1;       % vectorized function
+CEstr.TolCon        = 1.0e-6;  % relative tolerance
 
 tic
-[Xopt,Fopt,ExitFlag,CEobj] = CEopt(F,[],[],lb,ub,nonlcon,CEobj)
+[Xopt,Fopt,ExitFlag,CEstr] = CEopt(F,[],[],lb,ub,nonlcon,CEstr)
 toc
 
 % objective function
 function F = PatternSearchFunc(x)
     x1 = x(:,1);
     x2 = x(:,2);
-    F = zeros(size(x1,1),1);
+    F  = zeros(size(x1,1),1);
     for i = 1:size(x,1)
         if  x1(i) < -5
             F(i) = (x1(i)+5).^2 + abs(x2(i));

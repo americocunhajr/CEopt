@@ -17,5 +17,5 @@ sigma0 = (ub-lb)/6;
 
 % CE optimizer
 tic
-[Xopt,Fopt,ExitFlag,CEobj] = CEopt(F,mu0,sigma0,lb,ub)
+[Xopt,Fopt,ExitFlag,CEobj] = CEopt(F,mu0,sigma0,lb,ub);
 toc

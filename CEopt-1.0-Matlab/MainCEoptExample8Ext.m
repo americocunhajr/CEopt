@@ -5,7 +5,7 @@
 %              basilio.julio@posgraduacao.uerj.br
 %
 %  Originally programmed in: Jul 13, 2024
-%           Last updated in: Aug 09, 2024
+%           Last updated in: Jun 12, 2025
 % -----------------------------------------------------------------
 %  ﻿﻿Example 8: Fractional-order controller optimal tuning
 %  (this example may take several minutes to run)

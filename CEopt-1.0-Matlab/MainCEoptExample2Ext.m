@@ -5,9 +5,12 @@
 %              americo.cunhajr@gmail.com
 %
 %  Originally programmed in: Jun 18, 2021
-%           Last updated in: Jul 24, 2024
+%           Last updated in: Aug 13, 2025
 % -----------------------------------------------------------------
-%  ﻿Example 2: The Peaks function in 2D
+%  Example 2: The Peaks function in 2D
+% -----------------------------------------------------------------
+% This script is just compatible with MATLAB due to the use of
+% 'RandStream' and 'exportgraphics' functions.
 % -----------------------------------------------------------------
 
 clc; clear; close all;
@@ -32,7 +35,7 @@ mu0    = lb + (ub-lb).*rand(2,1);
 sigma0 = 5*(ub-lb);
 
 % define parameters for the CE optimizer
-CEstr.isVectorized = 1;       % Vectorized function
+CEstr.isVectorized = true;       % Vectorized function
 CEstr.EliteFactor  = 0.1;     % Elite samples percentage
 CEstr.Nsamp        = 50;      % Number of samples
 CEstr.MaxIter      = 80;      % Maximum number of iterations
@@ -44,7 +47,7 @@ CEstr.q            = 10;      % Smoothing parameter
 
 % CE optimizer
 tic
-[Xopt, Fopt, ExitFlag, CEstr] = CEopt(F, mu0, sigma0, lb, ub, [], CEstr)
+[Xopt, Fopt, ExitFlag, CEstr] = CEopt(F, mu0, sigma0, lb, ub, [], CEstr);
 toc
 
 % meshgrid for visualization
@@ -118,12 +121,3 @@ hold off;
 
 % save the figure
 exportgraphics(gca, 'CEoptExample2.eps', 'Resolution', 300);
-
-% Objective function
-function F = PeaksFunc(x)
-    x1 = x(:,1);
-    x2 = x(:,2);
-    F = 3*(1-x1).^2.*exp(-x1.^2 - (x2+1).^2) ...
-      - 10*(x1/5 - x1.^3 - x2.^5).*exp(-x1.^2 - x2.^2)...
-      - (1/3)*exp(-(x1+1).^2 - x2.^2);
-end
