@@ -205,6 +205,7 @@ The routines in **CEopt** package are well-commented to explain their functional
 
 ### Authors
 - Americo Cunha Jr
+- José Hugo Capella Gaspar-Elsas
 - Marcos Vinicius Issa
 - Julio Cesar de Castro Basilio
 - Jose Geraldo Telles Ribeiro
