@@ -243,4 +243,4 @@ If you use **CEopt** in your research, please cite the following publication:
 ### Contact
 For any questions or further information, please contact:
 
-Americo Cunha Jr: americo.cunha@uerj.br
+Americo Cunha Jr: americo.cunha@lncc.br
